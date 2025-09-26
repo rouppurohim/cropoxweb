@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
             <div className="text-3xl font-bold">Cropox</div>
             
             <p className="flex items-center space-x-2 text-gray-300 text-sm">
-              <span>🇮🇩</span>
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAAD1BMVEX/AAAAAP//zAD/zgD///8AmdOnAAAAA3RSTlMA//+A83B4AAAAtUlEQVR4nO3QMQGAMAAAsWj+66kCAQI9P5PFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALgB4AUMAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGABwAEAAAQABgAABgAABgAABgAABgAABgACBvg/gAATsAOkOAAAAAElFTkSuQmCC" alt="Indonesian Flag" className="h-4 w-auto rounded-sm" />
               <span>Proudly Made by @nutaniman With ❤️</span>
             </p>
 
@@ -48,11 +48,11 @@ const Footer: React.FC = () => {
           <div className="md:col-span-1">
             <h3 className="text-xl font-semibold mb-4 text-gray-200">Links</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blogs</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Disclaimer</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms and Conditions</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Home</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blogs</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Disclaimer</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Terms and Conditions</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
             </ul>
           </div>
 

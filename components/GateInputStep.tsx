@@ -7,7 +7,7 @@ interface GateInputStepProps {
 
 const GateInputStep: React.FC<GateInputStepProps> = ({ onNext }) => {
   const [formData, setFormData] = useState<UserData>({
-    crop: 'Padi',
+    crop: '',
     stage: 'Vegetatif',
     location: '',
   });
@@ -38,19 +38,15 @@ const GateInputStep: React.FC<GateInputStepProps> = ({ onNext }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="crop" className="block text-sm font-medium text-gray-700 mb-1">Tanaman</label>
-          <select
+          <input
+            type="text"
             id="crop"
             name="crop"
             value={formData.crop}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition bg-white"
-          >
-            <option>Padi</option>
-            <option>Jagung</option>
-            <option>Cabai</option>
-            <option>Tomat</option>
-            <option>Bawang Merah</option>
-          </select>
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition"
+            placeholder="Contoh: Padi, Kedelai, Kentang"
+          />
         </div>
         <div>
           <label htmlFor="stage" className="block text-sm font-medium text-gray-700 mb-1">Fase Pertumbuhan</label>

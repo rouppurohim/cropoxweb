@@ -151,7 +151,7 @@ const Testimonials: React.FC = () => {
 const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   return (
     <div className="animate-fade-in">
-      <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-8 text-center">
+      <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-16 text-center">
         <h2 className="text-4xl font-extrabold text-green-800 tracking-tight">
           Diagnosa Cepat dengan Cropox 
         </h2>

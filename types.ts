@@ -37,4 +37,4 @@ export type AppStep = 'input' | 'diagnosis' | 'loading' | 'results';
 
 export type ViewMode = 'default' | 'whatsapp' | 'poster';
 
-export type AppPage = 'home' | 'diagnosis' | 'edukasi' | 'prediksi' | 'about';
+export type AppPage = 'home' | 'diagnosis' | 'edukasi' | 'prediksi' | 'about' | 'disclaimer' | 'privacy-policy' | 'contact-us' | 'blogs';

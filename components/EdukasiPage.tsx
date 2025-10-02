@@ -30,7 +30,7 @@ const EdukasiPage: React.FC = () => {
                     Klik link di bawah ini untuk terhubung ke pusat edukasi Cropox.
                 </p>
                 <a
-                    href="#"
+                    href="https://nutaniman.myscalev.com/cropoxgpts"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition transform hover:scale-105"

@@ -28,46 +28,73 @@ const FeatureCard: React.FC<{
 // --- Blog Section Components ---
 const blogData = [
   {
-    title: '5 Cara Rotasi Pestisida untuk Mencegah Resistensi Hama',
+    id: 4, // ID yang sesuai dengan artikel di BlogsPage
+    title: 'Integrated Pest Management (IPM): Strategi Holistik Pengendalian Hama',
     category: 'Stewardship',
-    excerpt: 'Resistensi hama menjadi tantangan serius. Pelajari strategi rotasi bahan aktif pestisida yang efektif berdasarkan Mode of Action (MoA) untuk menjaga efikasi produk dan keberlanjutan pertanian.',
+    excerpt: 'IPM menggabungkan berbagai metode pengendalian hama untuk menciptakan sistem yang berkelanjutan dan ramah lingkungan. Pelajari prinsip-prinsip dasar dan implementasinya.',
+    author: 'Dr. Maya Sari',
+    date: '8 Januari 2024',
+    readTime: '12 menit'
   },
   {
-    title: 'Mengenal Musuh Alami: Paederus fuscipes, Sahabat Petani Padi',
-    category: 'Agroekologi',
-    excerpt: 'Kumbang Rove (Paederus fuscipes) adalah predator alami wereng batang coklat yang sangat efektif. Ketahui cara mengkonservasi dan meningkatkan populasi musuh alami ini di lahan sawah Anda.',
-  },
-  {
-    title: 'Kalibrasi Sprayer: Kunci Aplikasi Pestisida yang Tepat Dosis',
+    id: 5, // ID yang sesuai dengan artikel di BlogsPage
+    title: 'Teknologi Drone untuk Monitoring Kesehatan Tanaman',
     category: 'Teknologi Pertanian',
-    excerpt: 'Aplikasi pestisida yang tidak terkalibrasi dapat menyebabkan pemborosan, pencemaran, dan efikasi yang rendah. Ikuti panduan langkah demi langkah untuk melakukan kalibrasi sprayer Anda.',
+    excerpt: 'Drone dengan sensor multispektral dapat mendeteksi stres tanaman, serangan hama, dan penyakit lebih awal. Revolusi teknologi untuk pertanian presisi.',
+    author: 'Ir. Andi Pratama',
+    date: '5 Januari 2024',
+    readTime: '9 menit'
+  },
+  {
+    id: 6, // ID yang sesuai dengan artikel di BlogsPage
+    title: 'Mikroorganisme Tanah: Kunci Kesuburan dan Kesehatan Lahan',
+    category: 'Agroekologi',
+    excerpt: 'Mikroorganisme tanah berperan vital dalam siklus nutrisi dan kesehatan tanaman. Pahami cara meningkatkan biodiversitas mikroba untuk produktivitas optimal.',
+    author: 'Prof. Indira Sari',
+    date: '3 Januari 2024',
+    readTime: '11 menit'
   },
 ];
 
 
-const BlogCard: React.FC<(typeof blogData[0])> = ({ title, category, excerpt }) => (
+const BlogCard: React.FC<(typeof blogData[0]) & { onNavigate: (page: AppPage) => void }> = ({ 
+  id, title, category, excerpt, author, date, readTime, onNavigate 
+}) => (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
         <div className="p-6 flex-grow">
-            <span className="text-xs font-semibold uppercase tracking-wider text-green-600 bg-green-100 px-2 py-1 rounded-full">{category}</span>
-            <h4 className="font-bold text-lg text-gray-800 mt-3">{title}</h4>
-            <p className="text-sm text-gray-600 mt-2">{excerpt}</p>
+            <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-green-600 bg-green-100 px-2 py-1 rounded-full">{category}</span>
+                <span className="text-xs text-gray-500">{readTime}</span>
+            </div>
+            <h4 className="font-bold text-lg text-gray-800 mb-3">{title}</h4>
+            <p className="text-sm text-gray-600 mb-4">{excerpt}</p>
         </div>
         <div className="p-6 bg-gray-50 border-t border-gray-200">
-            <a href="#" className="font-semibold text-green-600 hover:text-green-800 transition-colors">
-                Baca Selengkapnya &rarr;
-            </a>
+            <div className="flex items-center justify-between">
+                <div className="text-xs text-gray-500">
+                    <span className="font-medium">{author}</span>
+                    <span className="mx-1">•</span>
+                    <span>{date}</span>
+                </div>
+                <button 
+                  onClick={() => onNavigate('blogs')}
+                  className="font-semibold text-green-600 hover:text-green-800 transition-colors text-sm"
+                >
+                    Baca Selengkapnya &rarr;
+                </button>
+            </div>
         </div>
     </div>
 );
 
 
-const LatestUpdates: React.FC = () => {
+const LatestUpdates: React.FC<{ onNavigate: (page: AppPage) => void }> = ({ onNavigate }) => {
     return (
         <section className="mb-16">
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">Latest Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {blogData.map((post, index) => (
-                    <BlogCard key={index} {...post} />
+                    <BlogCard key={index} {...post} onNavigate={onNavigate} />
                 ))}
             </div>
         </section>
@@ -82,19 +109,20 @@ const testimonialsData = [
     quote: "Cropox sangat membantu saya mengidentifikasi wereng batang coklat lebih cepat. Rekomendasi PHT-nya juga mudah diikuti dan efektif menekan populasi hama.",
     name: "Asep Sunandar",
     title: "Petani Padi, Subang",
-    image: "https://i.ibb.co/6gZ2x0s/image.png",
+    image: "./testimoni/Asep Sunandar.jpg",
   },
   {
     quote: "Sebagai PPL, aplikasi ini jadi alat bantu andalan di lapangan. Diagnosa cepat dan berbasis data membuat penyuluhan ke petani jadi lebih akurat dan terpercaya.",
     name: "Siti Aminah",
     title: "Penyuluh Pertanian, Karawang",
-    image: "https://i.ibb.co/yQBWfHq/image.png",
+    image: "./testimoni/siti aminah.jpg",
   },
   {
     quote: "Fitur prediksi musimannya luar biasa. Saya bisa lebih waspada dan melakukan tindakan preventif sebelum serangan penyakit blas benar-benar meluas.",
     name: "I Wayan Sudarma",
     title: "Petani Cabai, Bali",
-    image: "https://i.ibb.co/z5Z2VjJ/image.png",
+    image: "./testimoni/I Wayan Sudarma.jpg",
+
   }
 ];
 
@@ -172,19 +200,19 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           icon="📚"
           title="Pusat Edukasi"
           description="Jelajahi modul pembelajaran tentang pestisida, praktik pertanian berkelanjutan, dan teknologi terbaru."
-          buttonText="Lihat Modul"
+          buttonText="Kunjungi Pusat Edukasi"
           onClick={() => onNavigate('edukasi')}
         />
         <FeatureCard
           icon="🌦️"
           title="Prediksi Musiman"
           description="Dapatkan wawasan berbasis data mengenai potensi risiko OPT di wilayah Anda untuk perencanaan yang lebih baik."
-          buttonText="Cek Prediksi"
+          buttonText="Kunjungi Pusat Prediksi"
           onClick={() => onNavigate('prediksi')}
         />
       </div>
 
-      <LatestUpdates />
+      <LatestUpdates onNavigate={onNavigate} />
 
       <Testimonials />
 

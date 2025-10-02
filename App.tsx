@@ -10,6 +10,10 @@ import EdukasiPage from './components/EdukasiPage';
 import PrediksiPage from './components/PrediksiPage';
 import HomePage from './components/HomePage';
 import AboutUsPage from './components/AboutUsPage';
+import DisclaimerPage from './components/DisclaimerPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import ContactUsPage from './components/ContactUsPage';
+import BlogsPage from './components/BlogsPage';
 
 
 function App() {
@@ -88,6 +92,14 @@ function App() {
         return <PrediksiPage />;
       case 'about':
         return <AboutUsPage />;
+      case 'disclaimer':
+        return <DisclaimerPage />;
+      case 'privacy-policy':
+        return <PrivacyPolicyPage />;
+      case 'contact-us':
+        return <ContactUsPage />;
+      case 'blogs':
+        return <BlogsPage />;
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }
@@ -107,7 +119,7 @@ function App() {
           {renderPage()}
         </div>
       </main>
-      <Footer />
+      <Footer onNavigate={handleNavigate} />
     </div>
   );
 }

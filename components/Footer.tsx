@@ -1,4 +1,5 @@
 import React from 'react';
+import { AppPage } from '../types';
 
 // Social media icons as components for clarity and to keep the file self-contained
 const LinkedInIcon = () => (
@@ -19,8 +20,11 @@ const ThreadsIcon = () => (
     </svg>
 );
 
+interface FooterProps {
+  onNavigate?: (page: AppPage) => void;
+}
 
-const Footer: React.FC = () => {
+const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer className="bg-emerald-950 text-white">
       <div className="container mx-auto px-6 py-12">
@@ -31,16 +35,16 @@ const Footer: React.FC = () => {
             <div className="text-3xl font-bold">Cropox</div>
             
             <p className="flex items-center space-x-2 text-gray-300 text-sm">
-              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAAD1BMVEX/AAAAAP//zAD/zgD///8AmdOnAAAAA3RSTlMA//+A83B4AAAAtUlEQVR4nO3QMQGAMAAAsWj+66kCAQI9P5PFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALgB4AUMAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGABwAEAAAQABgAABgAABgAABgAABgAABgACBvg/gAATsAOkOAAAAAElFTSuQmCC" alt="Indonesian Flag" className="h-4 w-auto rounded-sm" />
+              <img src="/images/indonesia-flag.svg" alt="Indonesian Flag" className="h-4 w-auto rounded-sm" />
               <span>Proudly Made by @nutaniman With ❤️</span>
             </p>
 
             <p className="text-sm text-gray-400">© 2025 Cropox™. All Rights Reserved.</p>
 
             <div className="flex space-x-4 pt-2">
-              <a href="#" aria-label="LinkedIn" className="text-gray-400 hover:text-white transition-colors"><LinkedInIcon /></a>
-              <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors"><InstagramIcon /></a>
-              <a href="#" aria-label="Threads" className="text-gray-400 hover:text-white transition-colors"><ThreadsIcon /></a>
+              <a href="https://www.linkedin.com/in/rouppurohim/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-gray-400 hover:text-white transition-colors"><LinkedInIcon /></a>
+              <a href="https://www.instagram.com/nutaniman/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors"><InstagramIcon /></a>
+              <a href="https://www.threads.com/@nutaniman" target="_blank" rel="noopener noreferrer" aria-label="Threads" className="text-gray-400 hover:text-white transition-colors"><ThreadsIcon /></a>
             </div>
           </div>
           
@@ -48,11 +52,10 @@ const Footer: React.FC = () => {
           <div className="md:col-span-1">
             <h3 className="text-xl font-semibold mb-4 text-gray-200">Links</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blogs</a></li>
-              {/* Fix: Complete truncated file content and add missing links */}
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Disclaimer</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+              <li><button onClick={() => onNavigate?.('blogs')} className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer text-left">Blogs</button></li>
+              <li><button onClick={() => onNavigate?.('disclaimer')} className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer text-left">Disclaimer</button></li>
+              <li><button onClick={() => onNavigate?.('privacy-policy')} className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer text-left">Privacy Policy</button></li>
+              <li><button onClick={() => onNavigate?.('contact-us')} className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer text-left">Contact Us</button></li>
             </ul>
           </div>
         </div>

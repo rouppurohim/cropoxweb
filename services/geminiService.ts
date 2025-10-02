@@ -1,123 +1,127 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import { UserData, DiagnosisResult } from '../types';
+// src/GeminiService.ts
+import { GoogleAI, Type } from "@google/genai";
+import type { UserData, DiagnosisResult } from "../types";
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string;
+if (!apiKey) {
+  throw new Error("VITE_GEMINI_API_KEY not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Inisialisasi klien
+const ai = new GoogleAI({ apiKey });
 
+// Skema respons (pakai snake_case jika perlu oleh SDK)
 const responseSchema = {
-    type: Type.OBJECT,
-    properties: {
-        diagnosis: {
-            type: Type.OBJECT,
-            properties: {
-                name: { type: Type.STRING, description: "Nama organisme pengganggu tanaman (OPT) yang teridentifikasi, misalnya 'Hawar Daun'." },
-                confidence: { type: Type.NUMBER, description: "Tingkat kepercayaan diagnosa dalam persentase (0-100)." },
-                description: { type: Type.STRING, description: "Deskripsi singkat tentang OPT tersebut." }
-            },
-            required: ["name", "confidence", "description"]
-        },
-        phtNonChemical: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Judul untuk bagian ini, misalnya 'Rekomendasi PHT Non-Kimia'." },
-                methods: {
-                    type: Type.ARRAY,
-                    items: { type: Type.STRING },
-                    description: "Daftar metode pengendalian non-kimia (varietas tahan, musuh alami, sanitasi, dll)."
-                }
-            },
-            required: ["title", "methods"]
-        },
-        pesticideRecommendation: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Judul untuk bagian ini, misalnya 'Rekomendasi Pestisida Legal'." },
-                activeIngredient: { type: Type.STRING, description: "Nama bahan aktif pestisida yang direkomendasikan." },
-                moa: { type: Type.STRING, description: "Kode Mode of Action (FRAC/IRAC/HRAC)." },
-                rotationInfo: { type: Type.STRING, description: "Informasi singkat tentang pentingnya rotasi MoA." },
-                disclaimer: { type: Type.STRING, description: "Peringatan wajib: 'Gunakan sesuai label, verifikasi legalitas di pestisida.id.'" }
-            },
-            required: ["title", "activeIngredient", "moa", "rotationInfo", "disclaimer"]
-        },
-        seasonalPrediction: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Judul untuk bagian ini, misalnya 'Prediksi OPT Musiman'." },
-                riskLevel: { type: Type.STRING, enum: ["rendah", "sedang", "tinggi"], description: "Tingkat risiko OPT untuk musim ini." },
-                trend: { type: Type.STRING, description: "Analisis tren singkat berdasarkan data iklim, DPI, dll." }
-            },
-            required: ["title", "riskLevel", "trend"]
-        },
-        education: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Judul untuk bagian ini, misalnya 'Modul Edukasi Terkait'." },
-                summary: { type: Type.STRING, description: "Ringkasan singkat dari modul edukasi yang relevan." },
-                linkText: { type: Type.STRING, description: "Teks untuk tautan, misalnya 'Pelajari Lebih Lanjut tentang 6 Tepat'." }
-            },
-            required: ["title", "summary", "linkText"]
-        }
+  type: Type.OBJECT,
+  properties: {
+    diagnosis: {
+      type: Type.OBJECT,
+      properties: {
+        name: { type: Type.STRING, description: "Nama OPT teridentifikasi, mis. 'Hawar Daun'." },
+        confidence: { type: Type.NUMBER, description: "Tingkat kepercayaan (0-100)." },
+        description: { type: Type.STRING, description: "Deskripsi singkat OPT." }
+      },
+      required: ["name", "confidence", "description"]
     },
-     required: ["diagnosis", "phtNonChemical", "pesticideRecommendation", "seasonalPrediction", "education"]
-};
+    phtNonChemical: {
+      type: Type.OBJECT,
+      properties: {
+        title: { type: Type.STRING, description: "Judul bagian PHT non-kimia." },
+        methods: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Daftar metode non-kimia." }
+      },
+      required: ["title", "methods"]
+    },
+    pesticideRecommendation: {
+      type: Type.OBJECT,
+      properties: {
+        title: { type: Type.STRING },
+        activeIngredient: { type: Type.STRING, description: "Bahan aktif yang direkomendasikan." },
+        moa: { type: Type.STRING, description: "Kode Mode of Action (FRAC/IRAC/HRAC)." },
+        rotationInfo: { type: Type.STRING, description: "Pentingnya rotasi MoA." },
+        disclaimer: { type: Type.STRING, description: "Wajib: 'Gunakan sesuai label, verifikasi legalitas di pestisida.id'." }
+      },
+      required: ["title", "activeIngredient", "moa", "rotationInfo", "disclaimer"]
+    },
+    seasonalPrediction: {
+      type: Type.OBJECT,
+      properties: {
+        title: { type: Type.STRING },
+        riskLevel: { type: Type.STRING, enum: ["rendah", "sedang", "tinggi"] },
+        trend: { type: Type.STRING }
+      },
+      required: ["title", "riskLevel", "trend"]
+    },
+    education: {
+      type: Type.OBJECT,
+      properties: {
+        title: { type: Type.STRING },
+        summary: { type: Type.STRING },
+        linkText: { type: Type.STRING }
+      },
+      required: ["title", "summary", "linkText"]
+    }
+  },
+  required: ["diagnosis", "phtNonChemical", "pesticideRecommendation", "seasonalPrediction", "education"]
+} as const;
 
-
-export const fetchDiagnosis = async (
+export async function fetchDiagnosis(
   userData: UserData,
   description: string,
   base64Images: string[],
   mimeTypes: string[]
-): Promise<DiagnosisResult> => {
-    
-    const imageParts = base64Images.map((img, index) => ({
-        inlineData: {
-            data: img,
-            mimeType: mimeTypes[index] || 'image/jpeg',
-        },
-    }));
+): Promise<DiagnosisResult> {
 
-    const prompt = `
-    Anda adalah CropoxGPT, seorang ahli agronomi digital untuk petani di Indonesia.
-    Berdasarkan data berikut:
-    - Tanaman: ${userData.crop}
-    - Fase Tanam: ${userData.stage}
-    - Lokasi: ${userData.location}
-    - Deskripsi Gejala: "${description}"
-    - Foto terlampir.
+  // Sesuaikan format image parts
+  const imageParts = base64Images.map((img, index) => ({
+    inlineData: {
+      data: img, // base64 tanpa prefix data URI
+      mimeType: mimeTypes[index] || "image/jpeg",
+    },
+  }));
 
-    Lakukan analisis dan berikan output dalam format JSON yang sesuai dengan skema yang diberikan.
-    1.  **Identifikasi OPT**: Analisis foto dan deskripsi untuk mengidentifikasi gulma, hama, atau penyakit. Berikan nama OPT dan tingkat kepercayaan.
-    2.  **Rekomendasi PHT Non-Kimia**: Berikan 3-4 poin rekomendasi PHT non-kimia yang praktis.
-    3.  **Rekomendasi Pestisida**: Berikan satu bahan aktif yang legal dan efektif. Sertakan kode MoA dan pentingnya rotasi. Selalu sertakan disclaimer wajib.
-    4.  **Prediksi Musiman**: Berdasarkan lokasi dan tanaman, berikan prediksi risiko OPT (rendah/sedang/tinggi) untuk musim tanam 2024/2025 dengan analisis singkat.
-    5.  **Edukasi**: Berikan ringkasan satu modul edukasi yang paling relevan dengan kasus ini.
+  const prompt = `
+Anda adalah CropoxGPT, ahli agronomi digital untuk petani Indonesia.
+Berdasarkan data:
+- Tanaman: ${userData.crop}
+- Fase Tanam: ${userData.stage}
+- Lokasi: ${userData.location}
+- Gejala: "${description}"
+- Foto terlampir.
 
-    Gunakan bahasa yang mudah dipahami oleh petani. Pastikan semua kolom dalam skema JSON terisi.
-    `;
-    
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: {
-            parts: [
-                ...imageParts,
-                { text: prompt }
-            ]
-        },
-        config: {
-            responseMimeType: 'application/json',
-            responseSchema: responseSchema,
-        },
-    });
+Berikan output JSON sesuai skema:
+1) Identifikasi OPT (nama, confidence, deskripsi)
+2) Rekomendasi PHT Non-Kimia (3–4 poin)
+3) Rekomendasi Pestisida (1 bahan aktif + MoA + info rotasi + disclaimer)
+4) Prediksi Musiman (rendah/sedang/tinggi + analisis singkat)
+5) Edukasi (judul, ringkasan, linkText)
+Gunakan bahasa mudah dipahami petani.
+  `.trim();
 
-    try {
-        const jsonText = response.text.trim();
-        const result = JSON.parse(jsonText);
-        return result as DiagnosisResult;
-    } catch (e) {
-        console.error("Failed to parse JSON response:", response.text);
-        throw new Error("Invalid JSON response from model.");
-    }
-};
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          ...imageParts,
+          { text: prompt }
+        ]
+      }
+    ],
+    // Gunakan snake_case sesuai SDK
+    config: {
+      response_mime_type: "application/json",
+      response_schema: responseSchema as any,
+    },
+  });
+
+  // Akses teks dari response
+  const text = response?.response?.text?.() ?? "";
+  try {
+    const result = JSON.parse(text);
+    return result as DiagnosisResult;
+  } catch (err) {
+    console.error("Failed to parse JSON:", text);
+    throw new Error("Invalid JSON response from model.");
+  }
+}
